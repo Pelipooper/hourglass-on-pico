@@ -18,11 +18,13 @@ spi1=busio.SPI(clk,MOSI=MOSI)
 spi2=busio.SPI(clk2,MOSI=MOSI2)
 
 DELAY = 0.00
+
 i2c = busio.I2C(scl=board.GP1, sda=board.GP0)
 # the accelo
 accelo = adafruit_adxl34x.ADXL345(i2c)
 
 # the matrix
+# using different buses here, same bus would cause the bottom display glitch out sometimes
 matrix1 = matrices.Matrix8x8(spi1, cs1)
 matrix2 = matrices.Matrix8x8(spi2, cs2)
 
@@ -30,10 +32,11 @@ matrix2 = matrices.Matrix8x8(spi2, cs2)
 sand1 = matrixsand.MatrixSand(8, 8)
 sand2 = matrixsand.MatrixSand(8, 8)
 
+# global brightness adjustment
 matrix1.brightness(3)
 matrix2.brightness(3)
 
-# simple helper
+# matrix updater
 def update_matrix1():
     for x in range(8):
         for y in range(8):
@@ -46,7 +49,7 @@ def update_matrix2():
             matrix2.pixel(x,y,sand2[x,y])
     matrix2.show()
 
-# fill up some sand
+# fill up some initial sand
 for sx in range(8):
     for sy in range(8):
         sand1[sx, sy] = True
@@ -61,6 +64,7 @@ while True:
     # read accelo
     ax, ay, az = accelo.acceleration
     # rotate coords
+    # you might need to change the sign of ax and ay depending on the orientation of the sensor
     xx = ax - ay
     yy = ax + ay
     zz = az
