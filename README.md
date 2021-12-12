@@ -1,5 +1,5 @@
 # hourglass-on-pico
-Hourglass on the pi pico using circuitpython
+"Hourglass" on the raspberry pi pico using circuitpython
 
 circuitpython version 7.0.0
 
